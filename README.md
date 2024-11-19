@@ -9,6 +9,9 @@ All rights reserved to NewScienceWorld ©NewScienceWorld.
 **_'Why join the navy when you can become a pirate'_**
 
 **How to use this?**
+
 1.Head to the releases tab and check for latest releases.
+
 2.Click on the relavant releases tab
+
 3.Proceed to download the released PDF
