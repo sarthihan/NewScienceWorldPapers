@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GitHub Releases</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+			line-height: 1.6;
+		}
+		.release {
+			border: 1px solid #0cf;
+			padding: 15px;
+			margin-bottom: 10px;
+			border-radius: 5px;
+		}
+		.release h3 {
+			margin: 0 0 5px;
+		}
+		.release p {
+			margin: 5px 0;
+		}
+	</style>
+</head>
+<body>
+	<h1>GitHub Releases</h1>
+	<div id="releases">Good Things are coming...</div>
+
+	<script>
+		// ©AR Systems code by arpro89
+		const owner = "sarthihan";
+		const repo = "NewScienceWorldPapers";
+
+		const fetchReleases = async () => {
+			const url = `https://api.github.com/repos/${owner}/${repo}/releases`;
+			try {
+				const response = await fetch(url);
+				if (!response.ok) {
+					throw new Error(`Error fetching releases: ${response.statusText}`);
+				}
+				const releases = await response.json();
+				displayReleases(releases);
+			} catch (error) {
+				document.getElementById("releases").innerHTML = `<p>${error.message}</p>`;
+			}
+		};
+
+		const displayReleases = (releases) => {
+			const container = document.getElementById("releases");
+			container.innerHTML = ""; // Clear initial message
+			if (releases.length === 0) {
+				container.innerHTML = "<p>No releases found.</p>";
+				return;
+			}
+			releases.forEach(release => {
+				const releaseDiv = document.createElement("div");
+				releaseDiv.className = "release";
+				releaseDiv.innerHTML = `
+					<h3>${release.name || "Unnamed Release"}</h3>
+					<p><strong>Tag:</strong> ${release.tag_name}</p>
+					<p><strong>Published:</strong> ${new Date(release.published_at).toLocaleDateString()}</p>
+					<p>${release.body || "No description provided."}</p>
+					<a href="${release.html_url}" target="_blank">View on GitHub</a>
+				`;
+				container.appendChild(releaseDiv);
+			});
+		};
+
+		// Fetch and display releases on page load; Done by arpro89
+		fetchReleases();
+	</script>
+</body>
+</html>
