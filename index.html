@@ -3,102 +3,286 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Github Releases</title>
+	<title>NewScienceWorld Releases</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 	<style>
-		body, html {
-			margin: 0;
-			padding: 0;
-			width: 100%;
-			height: 100%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			background-image: url('https://picsum.photos/2048'); /* fetch BG from Nvidia URL */
+		:root {
+			--glass-bg: rgba(255, 255, 255, 0.052);
+			--glass-border: rgba(255, 255, 255, 0.2);
+			--glass-shadow: 0 8px 32px 0 rgba(41, 72, 158, 0.37);
+			--text-color: #ffffff;
+			--accent-color: #008aff;
+		}
+
+		body {
+			font-family: 'Inter', sans-serif;
+			
+			/* --- Background.config --- */
+			/* random image fetcher */
+			background-image: 
+			linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* Dark overlay */
+			url('https://picsum.photos/3048');
+			
+			/* image covers the whole screen */
 			background-size: cover;
+			
+			/* centers the image */
 			background-position: center;
-			font-family: 'Arial', sans-serif;
-			color: rgb(0, 0, 0);
-		}
-
-		.glass-container {
-			background: rgba(255, 255, 255, 0.23);
-			backdrop-filter: blur(15px);
-			border-radius: 25px;
-			padding: 20px;
-			width: 90%;
-			max-width: 1500px;
-			box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-			border: 1px solid rgba(250, 250, 250, 0.305);
-			text-align: center;
-		}
-
-		h1 {
-			font-size: 2em;
-			margin-bottom: 20px;
-		}
-
-		.release {
-			margin-bottom: 20px;
-		}
-
-		.release h2 {
-			font-size: 1.5em;
-			margin-bottom: 5px;
-		}
-
-		.release p {
+			
+			/* keeps the image locked in place when scrolling (Parallax effect) */
+			background-attachment: fixed;
+			
+			background-repeat: no-repeat;
+			/* ------------------------------- */
+		
+			min-height: 100vh;
 			margin: 0;
-			font-size: 1em;
+			padding: 20px 20px;
+			color: var(--text-color);
 		}
+		/* Animated Background(Fallback for users who block random image fetcher) */
+		@keyframes gradientBG {
+			0% { background-position: 0% 50%; }
+			50% { background-position: 100% 50%; }
+			100% { background-position: 0% 50%; }
+		}
+
+		.container {
+			max-width: 1567px;
+			margin: 0 auto;
+		}
+
+		/* Glassmorphism Header */
+		header {
+			text-align: center;
+			margin-bottom: 40px;
+			padding: 30px;
+			border-radius: 16px;
+			background: var(--glass-bg);
+			box-shadow: var(--glass-shadow);
+			backdrop-filter: blur(25px);
+			-webkit-backdrop-filter: blur(24px);
+			border: 1px solid var(--glass-border);
+		}
+
+		h1 { margin: 0; font-weight: 600; letter-spacing: 1px; }
+		.repo-link { color: var(--accent-color); text-decoration: none; font-size: 0.9rem; }
+		.repo-link:hover { text-decoration: underline; }
+
+		/* Release Card Style */
+		.release-card {
+			background: var(--glass-bg);
+			box-shadow: var(--glass-shadow);
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
+			border: 1px solid var(--glass-border);
+			border-radius: 16px;
+			margin-bottom: 30px;
+			padding: 25px;
+			transition: transform 0.2s ease;
+		}
+
+		.release-card:hover {
+			transform: translateY(-5px);
+			background: rgba(255, 255, 255, 0.15);
+		}
+
+		.release-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1px solid var(--glass-border);
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.release-title h2 { margin: 0; font-size: 1.5rem; color: var(--accent-color); }
+		.tag-badge {
+			background: rgba(0, 210, 255, 0.2);
+			color: #00d2ff;
+			padding: 5px 12px;
+			border-radius: 20px;
+			font-size: 0.85rem;
+			font-weight: bold;
+			border: 1px solid rgba(0, 210, 255, 0.3);
+		}
+
+		.date { font-size: 0.85rem; color: #ccc; margin-top: 5px; display: block; }
+
+		/* Markdown Content Styling */
+		.release-body {
+			font-size: 0.95rem;
+			line-height: 1.6;
+			color: #e0e0e0;
+			max-height: 300px;
+			overflow-y: auto;
+			margin-bottom: 20px;
+			padding-right: 10px;
+		}
+
+		/* Custom Scrollbar */
+		.release-body::-webkit-scrollbar { width: 8px; }
+		.release-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+		.release-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+		/* Asset/Download Links */
+		.assets-list {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin-top: 20px;
+		}
+
+		.download-btn {
+			background: rgba(255, 255, 255, 0.1);
+			color: white;
+			text-decoration: none;
+			padding: 10px 15px;
+			border-radius: 8px;
+			border: 1px solid var(--glass-border);
+			font-size: 0.9rem;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.download-btn:hover {
+			background: var(--accent-color);
+			color: #000;
+			box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+		}
+
+		.loading, .error {
+			text-align: center;
+			padding: 40px;
+			background: var(--glass-bg);
+			border-radius: 16px;
+			backdrop-filter: blur(10px);
+		}
+
+		code { background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px; }
+		img { max-width: 100%; border-radius: 8px; }
 	</style>
 </head>
 <body>
-	<div class="glass-container">
-		<h1>Loading GitHub Releases...</h1>
+
+<div class="container">
+	<header>
+		<h1 id="repo-title">Loading... Please be patient!</h1>
+		<a href="#" id="github-link" class="repo-link" target="_blank"><i class="fab fa-github"></i> View on GitHub</a>
+	</header>
+
+	<div id="releases-container">
+		<div class="loading">
+			<i class="fas fa-spinner fa-spin fa-2x"></i>
+			<p style="margin-top: 10px;">Fetching latest releases... and coffee for you.</p>
+		</div>
 	</div>
+</div>
 
-	<script>
-		document.addEventListener("DOMContentLoaded", function() {
-			const apiUrl = "https://api.github.com/repos/{owner}/{repo}/releases";
-			const owner = "sarthihan"; // owner
-			const repo = "NewScienceWorldPapers"; // Repository
+<script>
+	// --- CONFIGURATION ---
+	//Repository config
+	const REPO = "sarthihan/NewScienceWorldPapers"; 
+	// ---------------------
 
-			fetch(apiUrl.replace("{owner}", owner).replace("{repo}", repo))
-				.then(response => response.json())
-				.then(data => {
-					const container = document.querySelector('.glass-container');
-					container.innerHTML = '<h1>NSW Papers</h1>'; // Reset the container
+	const API_URL = `https://api.github.com/repos/${REPO}/releases`;
 
-					if (data.length === 0) {
-						container.innerHTML += '<p>Oops no releases fetched</p>';
-					} else {
-						data.forEach(release => {
-							const releaseDiv = document.createElement('div');
-							releaseDiv.classList.add('release');
+	document.getElementById('repo-title').textContent = `${REPO} Releases`;
+	document.getElementById('github-link').href = `https://github.com/${REPO}`;
 
-							const title = document.createElement('h2');
-							title.textContent = release.tag_name;
+	async function fetchReleases() {
+		const container = document.getElementById('releases-container');
 
-							const date = document.createElement('p');
-							date.textContent = `Release Date: ${new Date(release.published_at).toLocaleDateString()}`;
+		try {
+			const response = await fetch(API_URL);
+			
+			if (!response.ok) {
+				throw new Error(`GitHub API Error: ${response.status} (Oops, the rate limit stikes again!)`);
+			}
 
-							const description = document.createElement('p');
-							description.textContent = release.body ? release.body : 'Description not given';
+			const data = await response.json();
 
-							releaseDiv.appendChild(title);
-							releaseDiv.appendChild(date);
-							releaseDiv.appendChild(description);
+			// Clear loading state
+			container.innerHTML = '';
 
-							container.appendChild(releaseDiv);
-						});
-					}
-				})
-				.catch(error => {
-					console.error('Error fetching releases:', error);
-					const container = document.querySelector('.glass-container');
-					container.innerHTML = '<h1>Oops no releases fetched!</h1><p>Please try again later.</p>';
+			if (data.length === 0) {
+				container.innerHTML = `<div class="error">No releases found for this repository(Don't mess with other's code ;).</div>`;
+				return;
+			}
+
+			data.forEach(release => {
+				// Parse Date
+				const date = new Date(release.published_at).toLocaleDateString('en-US', {
+					year: 'numeric', month: 'long', day: 'numeric'
 				});
-		});
-	</script>
+
+				// Parse Markdown body
+				const bodyContent = release.body ? marked.parse(release.body) : "<em>A Website to check the releases regarding the repository.</em>";
+
+				// Generate Assets HTML
+				let assetsHtml = '';
+				if (release.assets.length > 0) {
+					assetsHtml = release.assets.map(asset => `
+						<a href="${asset.browser_download_url}" class="download-btn" target="_blank">
+							<i class="fas fa-download"></i> ${asset.name} 
+							<span style="font-size:0.7em; opacity:0.7;">(${(asset.size / 1024 / 1024).toFixed(2)} MB)</span>
+						</a>
+					`).join('');
+				} else {
+					// Fallback to source code zip if no binary assets
+					assetsHtml = `
+						<a href="${release.zipball_url}" class="download-btn" target="_blank"><i class="fas fa-file-archive"></i> Source Code (Zip)</a>
+						<a href="${release.tarball_url}" class="download-btn" target="_blank"><i class="fas fa-file-archive"></i> Source Code (Tar)</a>
+					`;
+				}
+
+				// Create Card Element
+				const card = document.createElement('div');
+				card.className = 'release-card';
+				
+				card.innerHTML = `
+					<div class="release-header">
+						<div class="release-title">
+							<h2>${release.name || release.tag_name}</h2>
+							<span class="date"><i class="far fa-clock"></i> ${date}</span>
+						</div>
+						<span class="tag-badge"><i class="fas fa-tag"></i> ${release.tag_name}</span>
+					</div>
+					
+					<div class="release-body">
+						${bodyContent}
+					</div>
+
+					<div class="assets-list">
+						${assetsHtml}
+					</div>
+				`;
+
+				container.appendChild(card);
+			});
+
+		} catch (error) {
+			container.innerHTML = `
+				<div class="error">
+					<h3>Oops!</h3>
+					<p>${error.message}</p>
+					<p>Try again later.</p>
+				</div>
+			`;
+			console.error(error);
+		}
+	}
+
+	// Initialize
+	fetchReleases();
+</script>
+
 </body>
 </html>
