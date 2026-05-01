@@ -10,7 +10,7 @@ All rights reserved to NewScienceWorld ©NewScienceWorld.
 
 **How to use this?**
 
-1.Head to sarthihan.github.io/NewScienceWorldPapers and check for latest releases.
+1.Head to https://sarthihan.github.io/NewScienceWorldPapers and check for latest releases.
 
 2.Click on the relavant release's download button
 
